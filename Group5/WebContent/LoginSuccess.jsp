@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" import="java.util.ArrayList, food.Food" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,5 +8,14 @@
 <body>
 	<p>Session Time: ${time}</p>
 	<p>Welcome to meal suggestions, ${name}!</p>
+	<p>Food List:</p>
+	<ul>
+	<%
+	ArrayList<Food> foods = (ArrayList<Food>) request.getAttribute("foodList");
+	for(Food f : foods) { %>
+		<li> <%=f.toString() %> </li>
+	<% }
+	%>
+	</ul>
 </body>
 </html>

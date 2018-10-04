@@ -26,7 +26,7 @@ public class loginServlet extends HttpServlet {
 		User sessionUser = null;
 		boolean loginSuccess = false;
 		
-		//ArrayList<Food> foodList = SQLiteFoodSelect.selectAllFood();
+		ArrayList<Food> foodList = SQLiteFoodSelect.selectAllFood();
 		ArrayList<User> userList = SQLiteUserSelect.selectAllUser();
 		
 		for (User u : userList) {
@@ -42,6 +42,7 @@ public class loginServlet extends HttpServlet {
 			String curTime = ft.format(curDate);
 			req.setAttribute("time", curTime);
 			req.setAttribute("name", sessionUser.getName());
+			req.setAttribute("foodList", foodList);
 			req.getRequestDispatcher("LoginSuccess.jsp").forward(req, resp);
 		} else {
 			String failureMsg = "Login failure, please check provided details.";

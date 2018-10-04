@@ -1,4 +1,5 @@
 package food;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import database.*;
@@ -13,6 +14,7 @@ public class Food {
 	private double sugar;
 	private double sodium;
 	private double cost;
+	private static final DecimalFormat df = new DecimalFormat("0.00");
 	
 	public Food(String name, double energy, double protein, double fat, double sfa, double carb, double sugar,
 			double sodium, double cost) {
@@ -153,8 +155,8 @@ public class Food {
 
 	@Override
 	public String toString() {
-		return "Food [name=" + name + ", energy=" + energy + ", protein=" + protein + ", fat=" + fat + ", sfa=" + sfa
-				+ ", carb=" + carb + ", sugar=" + sugar + ", sodium=" + sodium + ", cost=" + cost + "]";
+		return name + ": energy(kJ)=" + df.format(energy) + ", protein(g)=" + df.format(protein) + ", fat(g)=" + df.format(fat) + ", sfa(g)=" + df.format(sfa)
+				+ ", carb(g)=" + df.format(carb) + ", sugar(g)=" + df.format(sugar) + ", sodium(mg)=" + df.format(sodium) + ", cost(A$)=" + df.format(cost) + "]";
 	}
 	
 	
