@@ -1,0 +1,521 @@
+package scpsolver.util.debugging;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.PrintStream;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.table.AbstractTableModel;
+import scpsolver.problems.ConstrainedProblem;
+import scpsolver.constraints.Constraint;
+import scpsolver.constraints.LinearBiggerThanEqualsConstraint;
+import scpsolver.constraints.LinearConstraint;
+import scpsolver.constraints.LinearEqualsConstraint;
+import scpsolver.constraints.LinearSmallerThanEqualsConstraint;
+import scpsolver.lpsolver.LinearProgramSolver;
+import scpsolver.lpsolver.SolverFactory;
+import scpsolver.problems.LPSolution;
+import scpsolver.problems.LPWizard;
+import scpsolver.problems.LinearProgram;
+import scpsolver.problems.SolutionRenderable;
+import scpsolver.util.SparseVector;
+
+public class LPDebugger {
+
+	int attemptcount = 0;
+	JFrame mainframe;
+	
+	class ConstraintTableDataModel extends AbstractTableModel {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 171619054654841854L;
+		ConstrainedProblem lp;
+		Boolean[] constraintswitch;
+		
+		public ConstraintTableDataModel(ConstrainedProblem lp) {
+			this.lp = lp; 
+			constraintswitch = new Boolean[lp.getConstraints().size()];
+			for (int i = 0; i < constraintswitch.length; i++) {
+				constraintswitch[i] = new Boolean(false);
+			}
+		} 
+		
+		public int getColumnCount() {
+			
+			return 3;
+		}
+
+		public int getRowCount() {
+			return lp.getConstraints().size();
+		}
+
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			if (columnIndex == 0) {
+				return lp.getConstraints().get(rowIndex).getName();
+			} else if (columnIndex == 1) {
+				return lp.getConstraints().get(rowIndex).getRHS();
+			} else {
+				return constraintswitch[rowIndex];
+			}
+		}
+		
+		public Class<? extends Object> getColumnClass(int c) {
+			return getValueAt(0, c).getClass();
+		}
+		
+		public boolean isCellEditable(int row, int col) {
+	             if (col == 2)
+	                 return true;
+	             else
+	                 return false;
+	             
+		}
+		
+		
+
+		@Override
+		public String getColumnName(int column) {
+			switch (column) {
+			case 0:
+				return "constraint name";
+			case 1:
+				return "RHS";
+			case 2:
+				return "deactivate";
+			default:
+				return "";
+			}
+		}
+
+		public void setValueAt(Object value, int row, int col) {
+			if (col == 2) constraintswitch[row] = (Boolean) value;
+			fireTableCellUpdated(row, col);
+		}
+	
+	}
+	
+
+	public LPDebugger(final LinearProgram lpo) {
+		mainframe = new JFrame();
+		mainframe.addWindowListener(new WindowAdapter() {
+
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		
+		final LinearProgram lp = new LinearProgram(lpo);
+		final ConstraintTableDataModel constrainttable = new ConstraintTableDataModel(lp);
+		final JTable jt = new JTable(constrainttable);
+		JScrollPane scroller = new JScrollPane();
+		scroller.add(jt);
+		mainframe.setTitle("Linear Program Debugger");
+		mainframe.getContentPane().setLayout(new BorderLayout());
+		scroller.add(jt);
+		scroller.setViewportView(jt);
+		mainframe.add(scroller, BorderLayout.CENTER);
+		JScrollPane logscroller = new JScrollPane();
+
+		final JTextArea messagelog = new JTextArea(10,20);
+		logscroller.add(messagelog);
+		logscroller.setViewportView(messagelog);
+		final JPanel messagepanel = new JPanel();
+		final JPanel buttonpanel = new JPanel();
+		final JButton solvebutton = new JButton();
+		solvebutton.setText("solve");
+		final JButton feasoptbutton = new JButton();
+		feasoptbutton.setText("deactivate minimum infeasibile constraints");
+		final JLabel label = new JLabel();
+		final JTextField maxboundbox = new JTextField();
+		LinearProgram lpn = getFeasOptLP(lpo);
+		LinearProgramSolver lps = SolverFactory.newDefault();
+		double[] solution = lps.solve(lpn);
+		double max = Double.NEGATIVE_INFINITY;
+		for (int j = lp.getDimension(); j < solution.length; j++) {
+			if (max < solution[j]) {
+				max = solution[j];
+			} 
+		}
+		maxboundbox.setText(""+Math.round(max));
+		feasoptbutton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				messagelog.append("================================\nrelaxing constraints by minimization...\n");
+				feasoptbutton.setEnabled(false);
+				LinearProgram lpc = LPDebugger.getFeasOptLPBinary(lp, Double.parseDouble(maxboundbox.getText()));
+				
+			
+				LinearProgramSolver solver = SolverFactory.newDefault();
+				
+				double[] solution = solver.solve(lpc);
+				
+				if (solution != null) {
+					int maxidx = 0;
+					double maxval = Double.NEGATIVE_INFINITY;
+					for (int i = lp.getDimension(); i < lp.getDimension()+lp.getConstraints().size()*2; i++) {
+					   
+						if (solution[i]>0)  {
+							int constraintindex = (i-lp.getDimension())% lp.getConstraints().size();
+							constrainttable.constraintswitch[constraintindex] = true;
+							messagelog.append("constraint \"" +  lp.getConstraints().get(constraintindex).getName() + "\" deactivated. (correction: " + solution[i]+")\n");
+						}
+					}
+					messagelog.append("obj.v.: " + lpc.evaluate(solution)+"\n");
+					
+					
+					
+				} else {
+					messagelog.append("System is infeasible.\n");
+					buttonpanel.setBackground(Color.RED);
+				}
+				jt.repaint();
+				feasoptbutton.setEnabled(true);
+			}
+			
+		});
+		
+		solvebutton.addActionListener(new ActionListener(){
+
+			public void actionPerformed(ActionEvent e) {
+				attemptcount++;
+				messagelog.append("================================\nattempt " + attemptcount+"\n");
+				
+				solvebutton.setEnabled(false);
+				LinearProgram lpc = new LinearProgram(lp);
+				ArrayList<Constraint> cc = new ArrayList<Constraint>();
+				
+				for (int i = 0; i < constrainttable.constraintswitch.length; i++) {
+					if (!constrainttable.constraintswitch[i]) {
+						cc.add(lp.getConstraints().get(i));
+					} else {
+						messagelog.append("constraint \"" +  lp.getConstraints().get(i).getName() + "\" deactivated.\n");
+						
+					}
+				}
+				lpc.setConstraints(cc);
+				
+				LinearProgramSolver solver = SolverFactory.newDefault();		
+
+				double[] solution = solver.solve(lpc);
+				
+				if (solution != null) {
+					double value = lp.evaluate(solution);
+					messagelog.append("System is feasible. Objective value is: " + value+"\n");
+					
+					buttonpanel.setBackground(Color.GREEN);
+					
+					if (lpo instanceof SolutionRenderable) {
+						
+						String  description = ((SolutionRenderable) lpo).getSolutionRepresentation(solution);
+						messagelog.append(description);
+					} 
+				} else {
+					messagelog.append("System is infeasible.\n");
+					buttonpanel.setBackground(Color.RED);
+				}
+				solvebutton.setEnabled(true);
+			}
+			
+		});	
+		
+		buttonpanel.setLayout(new BorderLayout());
+		messagepanel.setLayout(new BorderLayout());
+		
+		messagepanel.add(label, BorderLayout.CENTER);
+		buttonpanel.add(logscroller, BorderLayout.SOUTH);
+		buttonpanel.add(solvebutton, BorderLayout.EAST);
+		buttonpanel.add(feasoptbutton, BorderLayout.WEST);
+		buttonpanel.add(maxboundbox, BorderLayout.CENTER);
+	//mainframe.getContentPane().add(messagepanel, BorderLayout.NORTH);
+		mainframe.getContentPane().add(buttonpanel, BorderLayout.SOUTH);
+		mainframe.pack();
+		mainframe.setVisible(true);
+	}
+	
+	
+	public static LinearProgram getFeasOptLP(LinearProgram lp) {
+		ArrayList<Constraint> constraints = lp.getConstraints();
+		double[] oc = new double[constraints.size()*2 + lp.getDimension()]; 
+		double[] lb = new double[constraints.size()*2 + lp.getDimension()]; 
+		
+		if (lp.hasBounds()) {
+			for (int i = 0; i < lp.getDimension(); i++) {
+				lb[i] = lp.getLowerbound()[i];
+			}
+		}
+		for (int i = lp.getDimension(); i < oc.length; i++) {
+			lb[i] = 0.0;
+			oc[i] = 1.0;
+		}
+		
+		LinearProgram elp = new LinearProgram(oc);
+		elp.setLowerbound(lb);
+		for (int i = 0; i < constraints.size(); i++) {
+			
+			Constraint constraint = constraints.get(i);
+			LinearConstraint lc = (LinearConstraint) constraint;
+			SparseVector c = lc.getCSparse();
+			double b = lc.getT();
+			SparseVector slacks = new SparseVector(constraints.size()*2, 2);
+			slacks.set(i, 1.0);
+			slacks.set(constraints.size()+i, -1.0);
+			c.grow(slacks);
+			System.out.println(c);
+			if (constraint instanceof LinearSmallerThanEqualsConstraint) {
+				elp.addConstraint(new LinearSmallerThanEqualsConstraint(c, b, constraint.getName()));
+			} else if (constraint instanceof LinearBiggerThanEqualsConstraint) {
+				elp.addConstraint(new LinearBiggerThanEqualsConstraint(c, b, constraint.getName()));
+			} else if (constraint instanceof LinearEqualsConstraint) {
+				elp.addConstraint(new LinearEqualsConstraint(c, b, constraint.getName()));
+			}	
+		}
+		boolean[] isint = lp.getIsinteger();
+		for (int i = 0; i < isint.length; i++) {
+			if (isint[i]) elp.setInteger(i);
+		}
+		boolean[] isbool = lp.getIsboolean();
+		for (int i = 0; i < isbool.length; i++) {
+			if (isbool[i]) elp.setBinary(i);
+		}
+		
+		elp.setMinProblem(true);
+		
+		return elp;
+	}
+	
+	public static LinearProgram getFeasOptLPBinary(LinearProgram lp, double maxbound) {
+		ArrayList<Constraint> constraints = lp.getConstraints();
+		double[] oc = new double[constraints.size()*2 + lp.getDimension()]; 
+		double[] lb = new double[constraints.size()*2 + lp.getDimension()]; 
+		double[] ub = new double[constraints.size()*2 + lp.getDimension()];
+		
+		if (lp.hasBounds()) {
+			for (int i = 0; i < lp.getDimension(); i++) {
+				lb[i] = lp.getLowerbound()[i];
+				ub[i] = lp.getUpperbound()[i];
+				
+			}
+		} else {
+			for (int i = 0; i < lp.getDimension(); i++) {
+				lb[i] = -Double.MAX_VALUE;
+				ub[i] = +Double.MAX_VALUE;
+			}
+			
+		}
+		for (int i = lp.getDimension(); i < lp.getDimension()+constraints.size(); i++) {
+			//lb[i] = 0.0;
+			lb[i] = -Double.MAX_VALUE;
+			ub[i] = +Double.MAX_VALUE;
+			oc[i] = 0.0;
+		}
+		for (int i = lp.getDimension()+constraints.size(); i < oc.length; i++) {
+			//lb[i] = 0.0;
+			lb[i] = 0;
+			ub[i] = 1;
+			oc[i] = 1.0;
+		}		
+		
+		LinearProgram elp = new LinearProgram(oc);
+		
+		for (int i = lp.getDimension()+constraints.size(); i < oc.length; i++) {
+			elp.setBinary(i);
+		}
+		elp.setLowerbound(lb);
+		for (int i = 0; i < constraints.size(); i++) {
+			
+			Constraint constraint = constraints.get(i);
+			LinearConstraint lc = (LinearConstraint) constraint;
+			SparseVector c = lc.getCSparse();
+			double b = lc.getT();
+			SparseVector slacks = new SparseVector(constraints.size()*2, 2);
+			slacks.set(i, 1.0);
+			c.grow(slacks);
+			//System.out.println(c);
+			if (constraint instanceof LinearSmallerThanEqualsConstraint) {
+				elp.addConstraint(new LinearSmallerThanEqualsConstraint(c, b, constraint.getName()));
+			} else if (constraint instanceof LinearBiggerThanEqualsConstraint) {
+				elp.addConstraint(new LinearBiggerThanEqualsConstraint(c, b, constraint.getName()));
+			} else if (constraint instanceof LinearEqualsConstraint) {
+				elp.addConstraint(new LinearEqualsConstraint(c, b, constraint.getName()));
+			}
+			
+			
+			/*selconst.set(i, 1);
+			selconst1.set(i, 1);
+			selconst.set(lp.getDimension()+ i, bound);
+			selconst1.set(lp.getDimension()*2+ i, -bound);
+			elp.addConstraint(new LinearSmallerThanEqualsConstraint(selconst1, 0, "constraint " + i + "modified"));			
+			elp.addConstraint(new LinearBiggerThanEqualsConstraint(selconst, 0, "constraint " + i + "modified"));
+			*/
+			
+			SparseVector selconst = new SparseVector(elp.getDimension(),2);
+			SparseVector selconst1 = new SparseVector(elp.getDimension(),2);
+			
+			selconst.set(lp.getDimension()+i, 1);
+			selconst.set(lp.getDimension()+constraints.size()+ i, maxbound);
+			elp.addConstraint(new LinearBiggerThanEqualsConstraint(selconst, 0, "constraint " + i + " modified MAX"));
+			
+			selconst1.set(lp.getDimension()+i, 1);
+			//selconst1.set(lp.getDimension()+constraints.size()*2+ i, -maxbound);
+			selconst1.set(lp.getDimension()+constraints.size() + i, -maxbound);
+			
+			elp.addConstraint(new LinearSmallerThanEqualsConstraint(selconst1, 0, "constraint " + i + "modified MIN"));
+		}
+		boolean[] isint = lp.getIsinteger();
+		for (int i = 0; i < isint.length; i++) {
+			if (isint[i]) elp.setInteger(i);
+		}
+		boolean[] isbool = lp.getIsboolean();
+		for (int i = 0; i < isbool.length; i++) {
+			if (isbool[i]) elp.setBinary(i);
+		}
+		
+		elp.setMinProblem(true);
+	//	LPDebugger lpd = new LPDebugger(elp);
+		return elp;
+	}
+	
+	
+	public static LinearProgram getFeasOptLPBinary(LinearProgram lp, int maxvars, double bound) {
+		ArrayList<Constraint> constraints = lp.getConstraints();
+		double[] oc = new double[lp.getDimension()*2]; 
+		double[] lb = new double[lp.getDimension()*2]; 
+		double[] ub = new double[lp.getDimension()*2]; 
+		
+		
+		if (lp.hasBounds()) {
+			for (int i = 0; i < lp.getDimension(); i++) {
+				lb[i] = lp.getLowerbound()[i];
+				lb[i] = lp.getUpperbound()[i];
+				
+			}
+		} else {
+			for (int i = 0; i < oc.length; i++) {
+				lb[i] = -Double.MAX_VALUE;
+				ub[i] = +Double.MAX_VALUE;
+				
+				
+			}
+			
+		}
+		/*for (int i = lp.getDimension(); i < oc.length; i++) {
+			lb[i] = 0.0;
+			oc[i] = 1.0;
+		}*/
+		
+		
+		
+		LinearProgram elp;
+		if (maxvars == 0) {
+			elp = new LinearProgram(oc);
+		} else {
+			SparseVector newc = new SparseVector(lp.getDimension()*2,2);
+			elp = new LinearProgram(newc);
+		}
+		
+		
+		for (int i = lp.getDimension(); i < oc.length; i++) {
+			elp.setBinary(i);
+		}
+		elp.setLowerbound(lb);
+		elp.setUpperbound(ub);
+		
+		for (int i = 0; i < constraints.size(); i++) {
+			
+			Constraint constraint = constraints.get(i);
+			LinearConstraint lc = (LinearConstraint) constraint;
+			SparseVector c = lc.getCSparse();
+			double b = lc.getT();
+			SparseVector slacks = new SparseVector(lp.getDimension(), 2);
+			c.grow(slacks);
+			if (constraint instanceof LinearSmallerThanEqualsConstraint) {
+				elp.addConstraint(new LinearSmallerThanEqualsConstraint(c, b, constraint.getName()));
+			} else if (constraint instanceof LinearBiggerThanEqualsConstraint) {
+				elp.addConstraint(new LinearBiggerThanEqualsConstraint(c, b, constraint.getName()));
+			} else if (constraint instanceof LinearEqualsConstraint) {
+				elp.addConstraint(new LinearEqualsConstraint(c, b, constraint.getName()));
+			}
+			
+			//elp.addConstraint(new LinearSmallerThanEqualsConstraint(selconst1, 0, "constraint " + i + "modified"));
+		}
+		
+		for (int i = 0; i < lp.getDimension(); i++) {
+			SparseVector selconst = new SparseVector(lp.getDimension()*2,4);
+			SparseVector selconst1 = new SparseVector(lp.getDimension()*2,4);
+			selconst.set(i, 1);
+			selconst1.set(i, 1);
+			selconst.set(lp.getDimension()+ i, bound);
+			selconst1.set(lp.getDimension()+ i, -bound);
+			
+			elp.addConstraint(new LinearBiggerThanEqualsConstraint(selconst, 0, "constraint " + i + "modified"));
+			elp.addConstraint(new LinearSmallerThanEqualsConstraint(selconst1, 0, "constraint " + i + "modified"));			
+		}
+		if (maxvars > 0) elp.addConstraint(new LinearSmallerThanEqualsConstraint(oc, maxvars, "maxvars"));
+		boolean[] isint = lp.getIsinteger();
+		for (int i = 0; i < isint.length; i++) {
+			if (isint[i]) elp.setInteger(i);
+		}
+		
+		boolean[] isbool = lp.getIsboolean();
+		for (int i = 0; i < isbool.length; i++) {
+			if (isbool[i]) elp.setBinary(i);
+		}
+		
+		elp.setMinProblem(true);
+		return elp;
+	}
+	
+	
+	public static void main(String[] args) {
+		
+		 LinearProgram lp = new LinearProgram(new double[]{3.19, 2.59, 2.29, 2.89, 1.89, 1.99, 1.99, 2.49});
+		 
+		lp.setMinProblem(Boolean.TRUE);
+		lp.addConstraint(new LinearSmallerThanEqualsConstraint
+				(new double[]{60.0, 8.0, 8.0, 40.0, 15.0, 70.0, 25.0, 60.0}, 699, "Vitamin A"));
+		lp.addConstraint(new LinearBiggerThanEqualsConstraint
+				(new double[]{60.0, 8.0, 8.0, 40.0, 15.0, 70.0, 25.0, 60.0}, 700, "Vitamin D"));
+		
+		lp.addConstraint(new LinearBiggerThanEqualsConstraint
+				(new double[]{20.0, 0.0, 10.0, 40.0, 35.0, 30.0, 50.0, 20.0}, 700, "Vitamin C"));
+		lp.addConstraint(new LinearSmallerThanEqualsConstraint
+				(new double[]{10.0, 20.0, 15.0, 35.0, 15.0, 15.0, 25.0, 15.0}, 699, "Vitamin B1"));
+		lp.addConstraint(new LinearBiggerThanEqualsConstraint
+				(new double[]{10.0, 20.0, 15.0, 35.0, 15.0, 15.0, 25.0, 15.0}, 700, "Vitamin B12"));
+		lp.addConstraint(new LinearBiggerThanEqualsConstraint
+				(new double[]{15.0, 20.0, 10.0, 10.0, 15.0, 15.0, 15.0, 10.0}, 700, "Vitamin B14"));
+		lp.addConstraint(new LinearSmallerThanEqualsConstraint
+				(new double[]{60.0, 8.0, 8.0, 40.0, 15.0, 70.0, 25.0, 60.0}, 100, "Vitamin Z"));
+		lp.addConstraint(new LinearBiggerThanEqualsConstraint
+				(new double[]{60.0, 8.0, 8.0, 40.0, 15.0, 70.0, 25.0, 60.0}, 400, "Vitamin O"));
+		
+		lp.addConstraint(new LinearBiggerThanEqualsConstraint
+				(new double[]{20.0, 0.0, 10.0, 40.0, 35.0, 30.0, 50.0, 20.0}, 435, "Vitamin I"));
+		lp.addConstraint(new LinearSmallerThanEqualsConstraint
+				(new double[]{10.0, 20.0, 15.0, 35.0, 15.0, 15.0, 25.0, 15.0}, 699, "Vitamin B21"));
+		lp.addConstraint(new LinearBiggerThanEqualsConstraint
+				(new double[]{10.0, 20.0, 15.0, 35.0, 15.0, 15.0, 25.0, 15.0}, 1000, "Vitamin B2"));
+		
+
+		LinearProgram feasopt = LPDebugger.getFeasOptLP(lp);
+		LinearProgramSolver glp = SolverFactory.getSolver("GLPK");
+		
+
+		lp.setLowerbound(new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+		
+		LPDebugger lpd = new LPDebugger(lp);
+	}
+}
