@@ -9,8 +9,8 @@ public class SQLiteAccess {
 		Connection c = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
-			c.setAutoCommit(false);;
+			c = DriverManager.getConnection("jdbc:sqlite:C:/Users/Public/" + databaseName);
+			c.setAutoCommit(false);
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);

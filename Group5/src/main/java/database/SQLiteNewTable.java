@@ -10,14 +10,17 @@ public class SQLiteNewTable {
 		Statement stmt = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:user.db");
-			System.out.println("Food database opened successfully");
+			c = DriverManager.getConnection("jdbc:sqlite:C:/Users/Public/food.db");
+			c.setAutoCommit(false);
+			System.out.println("User database opened successfully");
 			
 			stmt = c.createStatement();
 			String sql = "CREATE TABLE FOOD (NAME TEXT NOT NULL, ENERGY FLOAT NOT NULL, PROTEIN FLOAT NOT NULL, FAT FLOAT NOT NULL, SFA FLOAT NUT NULL, CARB FLOAT NOT NULL, SUGAR FLOAT NOT NULL, SODIUM FLOAT NOT NULL, COST FLOAT NOT NULL)";
 			stmt.executeUpdate(sql);
 			stmt.close();
+			c.commit();
 			c.close();
+			System.out.println("Food table created");
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);

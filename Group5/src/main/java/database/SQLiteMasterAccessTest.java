@@ -5,7 +5,7 @@ import food.*;
 import user.User;
 
 public class SQLiteMasterAccessTest {
-	/*
+	
 	public static void main (String[] Args) {
 		
 		SQLiteNewDatabase.newDatabase();
@@ -20,11 +20,7 @@ public class SQLiteMasterAccessTest {
 		SQLiteInsertFood.insertFoodList(fList);
 		//Basic structure completed, run this code to see inserted food big mac.
 		SQLiteFoodSelect.selectAll();
-		
-	}
-	*/
 	
-	public static void main (String[] Args) {
 		SQLiteNewDatabase.newDatabase();
 		SQLiteNewUserTable.NewUserTable();
 		User lapis = new User("LapisLazuli", "123456", "Xiaowei", "ADMIN");

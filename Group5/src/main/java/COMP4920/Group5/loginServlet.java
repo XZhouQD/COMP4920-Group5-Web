@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import database.*;
+import food.Food;
 import user.User;
 
 public class loginServlet extends HttpServlet {
@@ -25,6 +26,7 @@ public class loginServlet extends HttpServlet {
 		User sessionUser = null;
 		boolean loginSuccess = false;
 		
+		//ArrayList<Food> foodList = SQLiteFoodSelect.selectAllFood();
 		ArrayList<User> userList = SQLiteUserSelect.selectAllUser();
 		
 		for (User u : userList) {
