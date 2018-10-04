@@ -40,8 +40,10 @@ public class loginServlet extends HttpServlet {
 			Date curDate = new Date();
 			SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss a zzz E dd/MM/yyyy");
 			String curTime = ft.format(curDate);
+			req.getSession().setAttribute("username", sessionUser.getUsername());
 			req.setAttribute("time", curTime);
 			req.setAttribute("name", sessionUser.getName());
+			req.setAttribute("type", sessionUser.getType());
 			req.setAttribute("foodList", foodList);
 			req.getRequestDispatcher("LoginSuccess.jsp").forward(req, resp);
 		} else {

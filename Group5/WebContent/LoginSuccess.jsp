@@ -8,6 +8,7 @@
 <body>
 	<p>Session Time: ${time}</p>
 	<p>Welcome to meal suggestions, ${name}!</p>
+	<p>You are ${type} of the site.</p>
 	<p>Food List:</p>
 	<ul>
 	<%
