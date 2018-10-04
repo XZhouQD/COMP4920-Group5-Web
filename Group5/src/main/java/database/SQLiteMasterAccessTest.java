@@ -2,6 +2,7 @@ package database;
 import java.util.ArrayList;
 
 import food.*;
+import user.User;
 
 public class SQLiteMasterAccessTest {
 	/*
@@ -22,4 +23,17 @@ public class SQLiteMasterAccessTest {
 		
 	}
 	*/
+	
+	public static void main (String[] Args) {
+		SQLiteNewUserTable.SQLiteNewUserTable();
+		User lapis = new User("LapisLazuli", "123456", "Xiaowei", "ADMIN");
+		lapis.addToDB();
+		new User("Emerald", "TestPassWord", "Abhilasha", "ADMIN").addToDB();
+		new User("Diamond", "Pass&symbol", "John Doe", "USER").addToDB();
+		SQLiteUserSelect.selectAll();
+		lapis.setPassword("NewPassword");
+		lapis.updatePassword();
+		SQLiteUserSelect.selectAll();
+	}
+	
 }

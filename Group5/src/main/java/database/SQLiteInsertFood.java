@@ -40,7 +40,7 @@ public class SQLiteInsertFood {
 		try {
 			stmt = c.createStatement();
 			String command = "UPDATE FOOD SET energy=" + food.getEnergy() + ", protein=" + food.getProtein() + ", fat=" + food.getFat() + ", sfa=" + food.getSfa() + ", carb=" + food.getCarb() + ", sugar=" + food.getSugar() + ", sodium=" + food.getSodium() + ", cost=" + food.getCost() +
-						" WHERE name=" + '"' + food.getName() + '"';
+						" WHERE name=" + "'" + food.getName() + "';";
 			stmt.executeUpdate(command);
 			stmt.close();
 			c.commit();
