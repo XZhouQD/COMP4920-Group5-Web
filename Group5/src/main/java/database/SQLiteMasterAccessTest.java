@@ -25,7 +25,8 @@ public class SQLiteMasterAccessTest {
 	*/
 	
 	public static void main (String[] Args) {
-		SQLiteNewUserTable.SQLiteNewUserTable();
+		SQLiteNewDatabase.newDatabase();
+		SQLiteNewUserTable.NewUserTable();
 		User lapis = new User("LapisLazuli", "123456", "Xiaowei", "ADMIN");
 		lapis.addToDB();
 		new User("Emerald", "TestPassWord", "Abhilasha", "ADMIN").addToDB();

@@ -34,6 +34,7 @@ public class SQLiteUserSelect {
 	public static ArrayList<User> selectAllUser() {
 		ArrayList<User> resultList = new ArrayList<User>();
 		Connection c = SQLiteAccess.buildConnection("user.db");
+		System.out.println("user.db connected");
 		Statement stmt = null;
 		String username = null;
 		String password = null;
@@ -41,7 +42,13 @@ public class SQLiteUserSelect {
 		String type = null;
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT * FROM FOOD;");
+			System.out.println("Statement Created");
+			ResultSet temp = stmt.executeQuery("SELECT * FROM sqlite_master WHERE type='table'");
+			while(temp.next()) {
+				System.out.println(temp.getString("name"));
+			}
+			ResultSet rs = stmt.executeQuery("SELECT * FROM USER");
+			System.out.println("SQL Select complete");
 			while(rs.next()) {
 				username = rs.getString("username");
 				password = rs.getString("password");

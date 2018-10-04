@@ -10,7 +10,7 @@ public class SQLiteNewTable {
 		Statement stmt = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:food.db");
+			c = DriverManager.getConnection("jdbc:sqlite:user.db");
 			System.out.println("Food database opened successfully");
 			
 			stmt = c.createStatement();

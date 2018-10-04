@@ -19,15 +19,21 @@ public class loginServlet extends HttpServlet {
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
 		System.out.println(username+" "+password);
-		boolean loginSuccess = false;		
-		ArrayList<User> userList = SQLiteUserSelect.selectAllUser();
+		
+		//SQLiteNewDatabase.newDatabase();
+		
 		User sessionUser = null;
+		boolean loginSuccess = false;
+		
+		ArrayList<User> userList = SQLiteUserSelect.selectAllUser();
+		
 		for (User u : userList) {
 			if (u.getUsername().equals(username) && u.getPassword().equals(password)) {
 				loginSuccess = true;
 				sessionUser = u;
 			}
 		}
+				
 		if(loginSuccess) {
 			Date curDate = new Date();
 			SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss a zzz E dd/MM/yyyy");

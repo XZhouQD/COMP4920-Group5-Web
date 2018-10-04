@@ -1,12 +1,11 @@
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import java.sql.*;
 
 public class SQLiteNewUserTable {
 
-	public static void SQLiteNewUserTable() {
+	//Build a table contains user info
+	public static void NewUserTable() {
 		Connection c = null;
 		Statement stmt = null;
 		try {
