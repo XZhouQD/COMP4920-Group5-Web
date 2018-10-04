@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -38,7 +39,7 @@ public class loginServlet extends HttpServlet {
 				
 		if(loginSuccess) {
 			Date curDate = new Date();
-			SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss a zzz E dd/MM/yyyy");
+			SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss a zzz E dd/MM/yyyy", Locale.ENGLISH);
 			String curTime = ft.format(curDate);
 			req.getSession().setAttribute("username", sessionUser.getUsername());
 			req.setAttribute("time", curTime);
