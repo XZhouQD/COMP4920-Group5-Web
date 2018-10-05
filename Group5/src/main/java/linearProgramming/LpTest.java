@@ -6,7 +6,6 @@ import database.*;
 import food.Food;
 
 public class LpTest {
-	
 	public static void main (String[] args) {
 		ArrayList<Food> fList = SQLiteFoodSelect.selectAllFood();
 		HashMap<String, Integer> reserve = new HashMap<String, Integer>();
@@ -18,5 +17,4 @@ public class LpTest {
 		HashMap<String, Integer> result = lpwT.getLowestCombo();
 		System.out.println(result.toString());
 	}
-	
 }
