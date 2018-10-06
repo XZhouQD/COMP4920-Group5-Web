@@ -11,6 +11,6 @@
 		Password: <input type="password" name="password" /><br />
 		<input type="submit" value="Login" />
 	</form>
-	<p> ${message} </p>
+	<p> Return Message: ${message} </p>
 </body>
 </html>
