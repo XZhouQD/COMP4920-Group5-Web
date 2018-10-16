@@ -21,7 +21,7 @@ public class SQLiteNewUnpublishedFoodTable {
 			stmt.close();
 			c.commit();
 			c.close();
-			System.out.println("Food table created");
+			System.out.println("Unpublished Food table created");
 		} catch (Exception e) {
 			System.err.println(e.getClass().getName() + ": " + e.getMessage());
 			System.exit(0);

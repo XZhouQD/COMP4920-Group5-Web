@@ -141,6 +141,23 @@ public class SQLiteFoodSelect {
 		System.out.println("Food " + input + " is deleted");
 	}
 	
+	public static void deleteFoodByNameUnpublished(String input) {
+		Connection c = SQLiteAccess.buildConnection("food.db");
+		Statement stmt = null;
+		try {
+			stmt = c.createStatement();
+			String command = "DELETE FROM UNFOOD WHERE NAME=" + '"' + input + '"' + ";";
+			stmt.executeUpdate(command);
+			stmt.close();
+			c.commit();
+			c.close();
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		System.out.println("Unpublished Food " + input + " is deleted");
+	}
+	
 	public static ArrayList<Food> selectAllUnpublishedFood() {
 		ArrayList<Food> resultList = new ArrayList<Food>();
 		Connection c = SQLiteAccess.buildConnection("food.db");
