@@ -140,4 +140,42 @@ public class SQLiteFoodSelect {
 		}
 		System.out.println("Food " + input + " is deleted");
 	}
+	
+	public static ArrayList<Food> selectAllUnpublishedFood() {
+		ArrayList<Food> resultList = new ArrayList<Food>();
+		Connection c = SQLiteAccess.buildConnection("food.db");
+		Statement stmt = null;
+		String name = null;
+		double energy = 0;
+		double protein = 0;
+		double fat = 0;
+		double sfa = 0;
+		double carb = 0;
+		double sugar = 0;
+		double sodium = 0;
+		double cost = 0;
+		try {
+			stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM UNFOOD;");
+			while(rs.next()) {
+				name = rs.getString("name");
+				energy = rs.getFloat("energy");
+				protein = rs.getFloat("protein");
+				fat = rs.getFloat("fat");
+				sfa = rs.getFloat("sfa");
+				carb = rs.getFloat("carb");
+				sugar = rs.getFloat("sugar");
+				sodium = rs.getFloat("sodium");
+				cost = rs.getFloat("cost");
+				resultList.add(new Food(name, energy, protein, fat, sfa, carb, sugar, sodium, cost));
+			}
+			rs.close();
+			stmt.close();
+			c.close();
+		} catch (Exception e) {
+			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+			System.exit(0);
+		}
+		return resultList;
+	}
 }
