@@ -12,6 +12,9 @@ response.setHeader("Content-Language", "en");
 	<p>Session Time: ${time}</p>
 	<p>Welcome to meal suggestions, ${name}!</p>
 	<p>You are ${type} of the site.</p>
+	<form method="post" action="logout">
+		<input type="submit" value="Logout" />
+	</form>
 	<p>Food List:</p>
 	<ul>
 	<%
