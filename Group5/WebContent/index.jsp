@@ -6,12 +6,12 @@
 <title>Meal Suggestions</title>
 </head>
 <body>
-	<form method="post" action="login">
+	<form method="post" action="/Group5/login">
 		Username: <input type="text" name="username" /><br />
 		Password: <input type="password" name="password" /><br />
 		<input type="submit" value="Login" />
 	</form>
-	<form method="post" action="register">
+	<form method="post" action="/Group5/register">
 		<input type="submit" value="Register" />
 	</form>
 	<p> ${message} </p>
