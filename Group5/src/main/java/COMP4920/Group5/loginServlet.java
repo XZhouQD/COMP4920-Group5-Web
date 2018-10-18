@@ -16,7 +16,6 @@ import database.*;
 import food.Food;
 import user.User;
 
-@WebServlet("/login")
 public class loginServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

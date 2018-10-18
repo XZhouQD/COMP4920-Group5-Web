@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import database.SQLiteUserSelect;
 import user.User;
 
-@WebServlet("/register")
 public class registerServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

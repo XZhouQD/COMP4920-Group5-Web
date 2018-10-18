@@ -17,7 +17,6 @@ import database.SQLiteUserSelect;
 import food.Food;
 import user.User;
 
-@WebServlet("/logout")
 public class logoutServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

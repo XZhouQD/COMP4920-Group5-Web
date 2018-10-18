@@ -19,18 +19,26 @@ import food.Food;
 import linearProgramming.LpWizardTry;
 import user.User;
 
-@WebServlet("/minimise")
 public class minimiseServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String[] rFoodList = req.getParameterValues("reserved");
-		String[] targetList = req.getParameterValues("minimise");
+		String[] rFoodList;
+		String[] targetList = req.getParameterValues("minimise").clone();
 		
 		ArrayList<Food> fList = SQLiteFoodSelect.selectAllFood();
 		HashMap<String, Integer> reserve = new HashMap<String, Integer>();
 		
-		for(String s : rFoodList) {
-			reserve.put(s, Integer.parseInt(req.getParameter(s)));
+		try {
+			rFoodList = req.getParameterValues("reserved").clone();
+		} catch (Exception e) {
+			rFoodList = new String[1];
+			rFoodList[0]="null";
+		}
+		
+		
+		for(int i = 0; i < rFoodList.length; i++) {
+				if(rFoodList[i].equals("null")) break;
+				reserve.put(rFoodList[i], Integer.parseInt(req.getParameter(rFoodList[i])));
 		}
 		
 		LpWizardTry lpwT = new LpWizardTry(fList, targetList[0], reserve);
