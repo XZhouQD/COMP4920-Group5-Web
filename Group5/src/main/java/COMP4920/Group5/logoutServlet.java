@@ -22,7 +22,7 @@ public class logoutServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String failureMsg = "Logout success!";
 		req.setAttribute("message", failureMsg);
-		req.getSession().invalidate();
+		req.getSession().removeAttribute("username");
 		req.getRequestDispatcher("index.jsp").forward(req, resp);
 	}
 	@Override

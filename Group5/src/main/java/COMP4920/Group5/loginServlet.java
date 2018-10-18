@@ -65,7 +65,8 @@ public class loginServlet extends HttpServlet {
 			HashMap<String, Integer> lastSave = SQLiteMealSaveControl.selectUser(username);
 			ArrayList<String> resutString = new ArrayList<String>();
 			for(String s : lastSave.keySet()) {
-				resutString.add(lastSave.get(s) + " of " + s);
+				if(lastSave.get(s) > 0)
+					resutString.add(lastSave.get(s) + " of " + s);
 			}
 			req.setAttribute("lastSave", resutString);
 			if(sessionUser.getType().equals("ADMIN")) {
