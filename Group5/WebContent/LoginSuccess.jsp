@@ -35,5 +35,13 @@ response.setHeader("Content-Language", "en");
 		<input type="submit" value="Minimise" />
 	</form>
 	Use Checkbox to reserve at least 1 serve to have!
+	<p>Last Optimisation:</p>
+	<ul>
+	<%
+		ArrayList<String> lastSave = (ArrayList<String>) request.getAttribute("lastSave");
+		for(String s : lastSave) { %>
+		<li> <%=s %> </li>
+	<%} %>
+	</ul>
 </body>
 </html>

@@ -18,5 +18,8 @@ response.setHeader("Content-Language", "en");
 	<%}%>
 	</ul>
 	<p> Hope you enjoy! </p>
+	<form method="post" action="login">
+		<input type="submit" value="Back" />
+	</form>
 </body>
 </html>
