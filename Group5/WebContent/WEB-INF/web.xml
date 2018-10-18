@@ -11,6 +11,15 @@
   </welcome-file-list>
   
   <servlet>
+  	<servlet-name>Minimise</servlet-name>
+  	<servlet-class>COMP4920.Group5.minimiseServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>Minimise</servlet-name>
+  	<url-pattern>/minimise</url-pattern>
+  </servlet-mapping>  
+  
+  <servlet>
   	<servlet-name>Login</servlet-name>
   	<servlet-class>COMP4920.Group5.loginServlet</servlet-class>
   </servlet>
@@ -18,16 +27,7 @@
   	<servlet-name>Login</servlet-name>
   	<url-pattern>/login</url-pattern>
   </servlet-mapping>
-  
-  <servlet>
-  	<servlet-name>Logout</servlet-name>
-  	<servlet-class>COMP4920.Group5.logoutServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-  	<servlet-name>Logout</servlet-name>
-  	<url-pattern>/logout</url-pattern>
-  </servlet-mapping>
-  
+    
   <servlet>
   	<servlet-name>Register</servlet-name>
   	<servlet-class>COMP4920.Group5.registerServlet</servlet-class>
@@ -36,14 +36,6 @@
   	<servlet-name>Register</servlet-name>
   	<url-pattern>/register</url-pattern>
   </servlet-mapping>
-  
-  <servlet>
-  	<servlet-name>Minimise</servlet-name>
-  	<servlet-class>COMP4920.Group5.minimiseServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-  	<servlet-name>Minimise</servlet-name>
-  	<url-pattern>/minimise</url-pattern>
-  </servlet-mapping>
+    
   
 </web-app>

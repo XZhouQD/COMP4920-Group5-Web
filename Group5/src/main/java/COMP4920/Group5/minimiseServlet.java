@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import database.SQLiteFoodSelect;
-import database.SQLiteUserSelect;
+import database.*;
 import food.Food;
 import linearProgramming.LpWizardTry;
 import user.User;
@@ -21,45 +20,25 @@ import user.User;
 public class minimiseServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		String[] reserve = req.getParameterValues("reserved");
-		HashMap<String, Integer> reserveList = new HashMap<String, Integer>();
-		for(String s : reserve) {
-			int reserveSize = 1;
-			try {
-				reserveSize = Integer.parseInt(req.getParameter(s));
-			} catch (Exception e) {
-				reserveSize = 1;
-			}
-			if(reserveSize < 1)
-				reserveSize = 1;
-			System.out.println(s);
-			reserveList.put(s, reserveSize);
-		}
-		String[] target = req.getParameterValues("minimise");
-		String specific = "Cost";
-		for(String s : target) {
-			if (s != null && !s.equals(""))
-				specific = s;
-		}
+		String[] rFoodList = req.getParameterValues("reserved");
+		String[] targetList = req.getParameterValues("minimise");
 		
 		ArrayList<Food> fList = SQLiteFoodSelect.selectAllFood();
-
-		LpWizardTry lpwT = new LpWizardTry(fList, specific, reserveList);
-		HashMap<String, Integer> result = lpwT.getLowestCombo();
-		String[] output = new String[result.size()];
-		int i = 0;
-		for(String s : result.keySet()) {
-			if(result.get(s) <= 1)
-				output[i] = result.get(s) + " serve of " + s;
-			else
-				output[i] = result.get(s) + " serves of " + s;
-			i++;
+		HashMap<String, Integer> reserve = new HashMap<String, Integer>();
+		
+		for(String s : rFoodList) {
+			reserve.put(s, Integer.parseInt(req.getParameter(s)));
 		}
 		
-		req.setAttribute("target", specific);
-		req.setAttribute("result", output);
+		LpWizardTry lpwT = new LpWizardTry(fList, targetList[0], reserve);
+		HashMap<String, Integer> result = lpwT.getLowestCombo();
+		ArrayList<String> resutString = new ArrayList<String>();
+		for(String s : result.keySet()) {
+			resutString.add(result.get(s) + " of " + s);
+		}
 		
+		req.setAttribute("target", targetList[0]);
+		req.setAttribute("result", resutString);
 		req.getRequestDispatcher("suggestions.jsp").forward(req, resp);
 	}
 	@Override

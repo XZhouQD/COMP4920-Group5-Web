@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.HashMap" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" import="java.util.HashMap, java.util.ArrayList" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +9,7 @@
 	<p> Your target: Minimise ${target} </p>
 	<p> Our suggestions: </p>
 	<ul>
-	<% String[] result = (String[]) request.getAttribute("result"); 
+	<% ArrayList<String> result = (ArrayList<String>) request.getAttribute("result"); 
 	for(String s : result) {%>
 		<li> <%=s %></li>
 	<%}%>
