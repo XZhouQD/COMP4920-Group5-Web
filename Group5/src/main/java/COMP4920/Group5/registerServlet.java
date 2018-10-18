@@ -32,12 +32,16 @@ public class registerServlet extends HttpServlet{
 		System.out.println(username+" "+password+" "+repeatPassword+" "+name);
 		
 		if(registerSuccess)
-			if(username==null || password == null || repeatPassword == null || name == null)
+			if(username==null || password == null || repeatPassword == null || name == null) {
 				registerSuccess = false;
+				req.setAttribute("message", "Please provide complete details");
+			}
 		
 		if(registerSuccess)
-			if(username.equals("") || password.equals("") || repeatPassword.equals("") || name.equals(""))
+			if(username.equals("") || password.equals("") || repeatPassword.equals("") || name.equals("")) {
 				registerSuccess = false;
+				req.setAttribute("message", "Please provide complete details");
+			}
 		
 		if(registerSuccess)
 			if(!password.equals(repeatPassword)) {
