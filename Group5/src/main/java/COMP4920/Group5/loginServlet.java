@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -36,7 +37,20 @@ public class loginServlet extends HttpServlet {
 				sessionUser = u;
 			}
 		}
-				
+		
+		try {
+			if(!loginSuccess)
+				username = (String) req.getSession().getAttribute("username");
+			for (User u : userList) {
+				if (u.getUsername().equals(username)) {
+					loginSuccess = true;
+					sessionUser = u;
+				}
+			}
+		} catch (Exception e){
+			//do nothing
+		}
+			
 		if(loginSuccess) {
 			Date curDate = new Date();
 			SimpleDateFormat ft = new SimpleDateFormat("hh:mm:ss a zzz E dd/MM/yyyy", Locale.ENGLISH);
@@ -48,6 +62,13 @@ public class loginServlet extends HttpServlet {
 			req.setAttribute("name", sessionUser.getName());
 			req.setAttribute("type", sessionUser.getType());
 			req.setAttribute("foodList", foodList);
+			HashMap<String, Integer> lastSave = SQLiteMealSaveControl.selectUser(username);
+			ArrayList<String> resutString = new ArrayList<String>();
+			for(String s : lastSave.keySet()) {
+				if(lastSave.get(s) > 0)
+					resutString.add(lastSave.get(s) + " of " + s);
+			}
+			req.setAttribute("lastSave", resutString);
 			if(sessionUser.getType().equals("ADMIN")) {
 				ArrayList<Food> unFoodList = SQLiteFoodSelect.selectAllUnpublishedFood();
 				req.setAttribute("unFoodList", unFoodList);

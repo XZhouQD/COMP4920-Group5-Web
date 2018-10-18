@@ -11,12 +11,15 @@ response.setHeader("Content-Language", "en");
 <body>
 	<p> Your target: Minimise ${target} </p>
 	<p> Our suggestions: </p>
-	<ul>
+	<ul style="height: 300px; overflow: auto">
 	<% ArrayList<String> result = (ArrayList<String>) request.getAttribute("result"); 
 	for(String s : result) {%>
 		<li> <%=s %></li>
 	<%}%>
 	</ul>
 	<p> Hope you enjoy! </p>
+	<form method="post" action="login">
+		<input type="submit" value="Back" />
+	</form>
 </body>
 </html>

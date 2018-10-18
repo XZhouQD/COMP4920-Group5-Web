@@ -12,7 +12,7 @@ response.setHeader("Content-Language", "en");
 	<p>Session Time: ${time}</p>
 	<p>Welcome to meal suggestions, ${name}!</p>
 	<p>You are ${type} of the site.</p>
-	<form method="post" action="login">
+	<form method="post" action="logout">
 		<input type="submit" value="Logout" />
 	</form>
 	<p>Food List:</p>
@@ -35,5 +35,13 @@ response.setHeader("Content-Language", "en");
 		<input type="submit" value="Minimise" />
 	</form>
 	Use Checkbox to reserve at least 1 serve to have!
+	<p>Last Optimisation:</p>
+	<ul>
+	<%
+		ArrayList<String> lastSave = (ArrayList<String>) request.getAttribute("lastSave");
+		for(String s : lastSave) { %>
+		<li> <%=s %> </li>
+	<%} %>
+	</ul>
 </body>
 </html>
