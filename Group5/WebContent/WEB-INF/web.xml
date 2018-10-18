@@ -27,4 +27,13 @@
   	<servlet-name>Logout</servlet-name>
   	<url-pattern>/logout</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>Register</servlet-name>
+  	<servlet-class>COMP4920.Group5.registerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>Register</servlet-name>
+  	<url-pattern>/register</url-pattern>
+  </servlet-mapping>
 </web-app>
