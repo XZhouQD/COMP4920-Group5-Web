@@ -36,4 +36,14 @@
   	<servlet-name>Register</servlet-name>
   	<url-pattern>/register</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>Minimise</servlet-name>
+  	<servlet-class>COMP4920.Group5.minimiseServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>Minimise</servlet-name>
+  	<url-pattern>/minimise</url-pattern>
+  </servlet-mapping>
+  
 </web-app>

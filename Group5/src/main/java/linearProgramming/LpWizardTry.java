@@ -29,6 +29,12 @@ public class LpWizardTry {
 	}
 	
 	public HashMap<String, Integer> getLowestCombo() {
+		System.out.println("==================");
+		System.out.println(fList);
+		System.out.println(lowest);
+		System.out.println(reserve);
+		System.out.println("==================");
+		
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
 		HashMap<String, LPWizardConstraint> lpwCList = new HashMap<String, LPWizardConstraint>();
 		LPWizard lpw = new LPWizard();
@@ -36,11 +42,11 @@ public class LpWizardTry {
 		for(String variable : variables) {
 			if(lowest.equals(variable))
 				continue;
-			System.out.print("Connstraint " + variable + ": " + dailyNeed.get(variable) + "<= 0 ");
+			//System.out.print("Connstraint " + variable + ": " + dailyNeed.get(variable) + "<= 0 ");
 			LPWizardConstraint lpwC = lpw.addConstraint(variable, dailyNeed.get(variable), "<=");
 			for(Food f : fList) {
 				lpwC = lpwC.plus(f.getName(), f.getByString(variable));
-				System.out.print("+ " + f.getName() + " * " + f.getByString(variable) + " ");
+				//System.out.print("+ " + f.getName() + " * " + f.getByString(variable) + " ");
 			}
 			lpwC.setAllVariablesInteger();
 			lpwCList.put(variable, lpwC);
@@ -48,13 +54,13 @@ public class LpWizardTry {
 		}
 		
 		LPWizardConstraint lpwC = lpw.addConstraint(lowest, 0, "=");
-		System.out.print("Connstraint " + lowest + ": 0 = 0 ");
+		//System.out.print("Connstraint " + lowest + ": 0 = 0 ");
 		for(Food f : fList) {
 			lpwC = lpwC.plus(f.getName(), f.getByString(lowest));
-			System.out.print("+ " + f.getName() + " * " + f.getByString(lowest) + " ");
+			//System.out.print("+ " + f.getName() + " * " + f.getByString(lowest) + " ");
 		}
 		lpwC = lpwC.plus(lowest, -1.0);
-		System.out.println("- " + lowest + " ");
+		//System.out.println("- " + lowest + " ");
 		lpwCList.put(lowest, lpwC);
 		
 		for(Food f : fList) {
@@ -64,7 +70,7 @@ public class LpWizardTry {
 			LPWizardConstraint lpwCN = lpw.addConstraint("Number"+f.getName(), reserveNum, "<=");
 			lpwCN.plus(f.getName(), 1.0);
 			lpwCList.put("Number"+f.getName(), lpwCN);
-			System.out.println("Number"+f.getName()+" : " + reserveNum + "<= " + f.getName());
+			//System.out.println("Number"+f.getName()+" : " + reserveNum + "<= " + f.getName());
 		}
 		
 		lpw.addConstraints(lpwCList);
