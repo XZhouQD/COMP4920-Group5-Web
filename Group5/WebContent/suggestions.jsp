@@ -1,4 +1,7 @@
 <%@ page language="java" import="java.util.HashMap, java.util.ArrayList" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%
+response.setHeader("Content-Language", "en");
+%>
 <!DOCTYPE html>
 <html>
 <head>

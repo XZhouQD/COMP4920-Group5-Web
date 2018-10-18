@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +19,7 @@ import food.Food;
 import linearProgramming.LpWizardTry;
 import user.User;
 
+@WebServlet("/minimise")
 public class minimiseServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -39,7 +42,8 @@ public class minimiseServlet extends HttpServlet {
 		
 		req.setAttribute("target", targetList[0]);
 		req.setAttribute("result", resutString);
-		req.getRequestDispatcher("suggestions.jsp").forward(req, resp);
+		RequestDispatcher rs = req.getRequestDispatcher("suggestions.jsp");
+		rs.forward(req, resp);
 	}
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
