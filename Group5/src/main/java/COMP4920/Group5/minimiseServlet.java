@@ -37,8 +37,14 @@ public class minimiseServlet extends HttpServlet {
 		}
 
 		for(int i = 0; i < rFoodList.length; i++) {
-				if(rFoodList[i].equals("null")) break;
-				reserve.put(rFoodList[i], Integer.parseInt(req.getParameter(rFoodList[i])));
+			if(rFoodList[i].equals("null")) break;
+			int serveNum;
+			try {
+				serveNum = Integer.parseInt(req.getParameter(rFoodList[i]));
+			} catch (Exception e) {
+				serveNum = 1;
+			}
+			reserve.put(rFoodList[i], serveNum);
 		}
 		
 		LpWizardTry lpwT = new LpWizardTry(fList, targetList[0], reserve);
