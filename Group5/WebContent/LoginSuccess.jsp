@@ -43,5 +43,17 @@ response.setHeader("Content-Language", "en");
 		<li> <%=s %> </li>
 	<%} %>
 	</ul>
+	<form method = "post", action = "postfood">
+		FoodName: <input type="text" name="foodName" /><br />
+		Energy: <input type="text" name="energy" /><br />
+		Protein: <input type="text" name="protein" /><br />
+		Fat: <input type="text" name="fat" /><br />
+		Sfa: <input type="text" name="sfa" /><br />
+		Carb: <input type="text" name="carb" /><br />
+		Sugar:<input type="text" name="suger" /><br />
+		Sodium:<input type="text" name="sodium" /><br />
+		Cost:<input type="text" name="cost" /><br />
+		<input type="submit" value = "Postfood">
+	</form>
 </body>
 </html>

@@ -45,6 +45,14 @@
   	<servlet-name>Register</servlet-name>
   	<url-pattern>/register</url-pattern>
   </servlet-mapping>
-    
+  
+  <servlet>
+  	<servlet-name>Postfood</servlet-name>
+  	<servlet-class>COMP4920.Group5.postfoodServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>Postfood</servlet-name>
+  	<url-pattern>/postfood</url-pattern>
+  </servlet-mapping>
   
 </web-app>
