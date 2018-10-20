@@ -18,7 +18,7 @@ response.setHeader("Content-Language", "en");
 <form class="w3-container w3-card-4" method="post" action="login">
 	<p> Your target: Minimise ${target} </p>
 	<p> Our suggestions: </p>
-	<ul style="height: 300px; overflow: auto">
+	<ul>
 	<% ArrayList<String> result = (ArrayList<String>) request.getAttribute("result"); 
 	for(String s : result) {%>
 		<li> <%=s %></li>
@@ -27,6 +27,8 @@ response.setHeader("Content-Language", "en");
 	<p> Hope you enjoy! </p>
 		<button class="w3-button w3-section w3-teal w3-ripple" type="submit" value="Back"> Back </button>
 	</form>
+	
+	<h6>Optimisation powered by SCPSolver and GLPKSolverPack, GPL License applied.</h6>
 	
 </div>
 </html>
