@@ -8,27 +8,32 @@ response.setHeader("Content-Language", "en");
 <html>
 <head>
 <meta  http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Successfully added new meal!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<title>Successful!</title>
 </head>
+<header class="w3-container w3-teal">
+<h1> Meal Planner </h1>
+</header>
 <body>
-<p> Info of Your food </p>
-	<ul>
-	<% 	Food newMeal = (Food)request.getAttribute("newMeal"); %>
-	 Name: <%=newMeal.getName() %> <br />
-	 Energy: <%=newMeal.getEnergy() %><br />
-	 Protein: <%=newMeal.getProtein() %><br />
-	 Fat: <%=newMeal.getFat() %> <br />
-	 Sfa: <%=newMeal.getSfa() %> <br />
-	 Carb: <%=newMeal.getCarb() %> <br />
-	 Sugar: <%=newMeal.getSugar() %> <br />
-	 Sodium: <%=newMeal.getSodium() %> <br />
-	 Cost: <%=newMeal.getCost() %> <br />
+<div class="w3-container w3-half w3-margin-top">
+<form class="w3-container w3-card-4" method="post" action="login">
+<p> <h2>Info of food</h2> </p>
+	<ul style="height: 300px; overflow: auto">
+	<% 	Food newFood = (Food)request.getAttribute("newMeal"); %>
+	 Name: <%=newFood.getName() %> <br />
+	 Energy: <%=newFood.getEnergy() %><br />
+	 Protein: <%=newFood.getProtein() %><br />
+	 Fat: <%=newFood.getFat() %> <br />
+	 Sfa: <%=newFood.getSfa() %> <br />
+	 Carb: <%=newFood.getCarb() %> <br />
+	 Sugar: <%=newFood.getSugar() %> <br />
+	 Sodium: <%=newFood.getSodium() %> <br />
+	 Cost: <%=newFood.getCost() %> <br />
 
 	</ul>
-	<p> </p>
-	<form method="post" action="login">
-		<input type="submit" value="Back" />
+		<button class="w3-button w3-section w3-teal w3-ripple" type="submit" value="Back"> Back </button>
 	</form>
-
+</div>
 </body>
 </html>
