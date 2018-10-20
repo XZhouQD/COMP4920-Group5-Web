@@ -55,4 +55,57 @@
   	<url-pattern>/postfood</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>addMeal</servlet-name>
+    <servlet-class>COMP4920.Group5.addMealServlet</servlet-class>
+  </servlet>
+    <servlet-mapping>
+      <servlet-name>addMeal</servlet-name>
+      <url-pattern>/addmeal</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>Meal</servlet-name>
+    <servlet-class>COMP4920.Group5.mealServlet</servlet-class>
+  </servlet>
+    <servlet-mapping>
+      <servlet-name>Meal</servlet-name>
+      <url-pattern>/meal</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>deleteMeal</servlet-name>
+    <servlet-class>COMP4920.Group5.deleteMealServlet</servlet-class>
+  </servlet>
+    <servlet-mapping>
+      <servlet-name>deleteMeal</servlet-name>
+      <url-pattern>/deletemeal</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>MealDelete</servlet-name>
+    <servlet-class>COMP4920.Group5.deleteServlet</servlet-class>
+  </servlet>
+    <servlet-mapping>
+      <servlet-name>MealDelete</servlet-name>
+      <url-pattern>/delete</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  <servlet-name>modifymeal</servlet-name>
+  <servlet-class>COMP4920.Group5.modifymealServlet</servlet-class>
+  </servlet>
+   <servlet-mapping>
+      <servlet-name>modifymeal</servlet-name>
+      <url-pattern>/modify</url-pattern>
+      </servlet-mapping>
+   <servlet>
+   <servlet-name>modify</servlet-name>
+   <servlet-class>COMP4920.Group5.modifyServlet</servlet-class> 
+    </servlet>
+    <servlet-mapping>
+     <servlet-name>modify</servlet-name>
+     <url-pattern>/modifymeal</url-pattern>
+     </servlet-mapping>
+     
+  
 </web-app>

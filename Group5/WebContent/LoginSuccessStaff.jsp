@@ -15,13 +15,13 @@ response.setHeader("Content-Language", "en");
 	<form method="post" action="logout">
 		<input type="submit" value="Logout" />
 	</form>
-	<form method="post" action="addmeal">
+	<form method="post" action="meal">
 	<input type="submit" value="Add meal" />
 	</form>
-	<form method="post" action="logout">
+	<form method="post" action="delete">
 	<input type="submit" value="Delete meal" />
 	</form>
-	<form method="post" action="logout">
+	<form method="post" action="modify">
 	<input type="submit" value="Modify meal" />
 	</form>
 	<p>Published Food List:</p>
